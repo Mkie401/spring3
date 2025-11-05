@@ -13,7 +13,8 @@
 				<span id="mesg" style="color: red"></span><br />
 			Password: <input id="passwd" type="password" required="required" /><br />
 			Name: <input id="name" required="required" /><br />
-			<input type="submit" value="Register" />
+			<input type="submit" value="Register" /><br>
+			<span id="result"></span>
 		</form>	
 		
 		<script type="text/javascript">
@@ -22,6 +23,7 @@
 			let name = document.getElementById("name");
 			let mesg = document.getElementById("mesg");
 			let regForm = document.getElementById("regForm");
+			let result = document.getElementById("result");
 			
 			account.addEventListener('blur', async () =>{
 				if (account.value){
@@ -41,11 +43,13 @@
 					name: name.value
 				};
 				let url = "/api/member/register";
-				let json = await fetch(url, {
+				let res = await fetch(url, {
 					method: 'POST',
 					headers: {"Content-Type":"application/json"},
 					body: JSON.stringify(data)
 				});
+				let json = await res.json();
+				result.textContent = json.success?"註冊成功":"註冊失敗";
 			});
 		</script>
 		
