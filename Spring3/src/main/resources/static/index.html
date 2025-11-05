@@ -24,6 +24,18 @@
 				}).fail(function(){
 					window.location.href = "login.html";
 				});
+				
+				$('#logout').click(function(){
+					$.ajax({
+						url : "/api/member/logout",
+						method : "GET",
+						dataType : "json"
+					}).always(function(){
+						window.location.href = "login.html";
+					});
+				});
+				
+				
 			})
 		</script>	
 	</head>
@@ -33,6 +45,7 @@
 		<hr>
 		<div id="welcome"></div>
 		<hr>
+		<button id="logout">Logout</button>
 		
 	</body>
 </html>
