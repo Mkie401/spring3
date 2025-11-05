@@ -20,12 +20,16 @@
 			let account = document.getElementById("account");
 			let passwd = document.getElementById("passwd");
 			let name = document.getElementById("name");
+			let mesg = document.getElementById("mesg");
 			let regForm = document.getElementById("regForm");
 			
 			account.addEventListener('blur', async () =>{
 				if (account.value){
 					let url = "/api/member/exist?account=" + account.value;
-					await fetch(url);
+					let res = await fetch(url);
+					let isExist = await res.json();
+					//console.log(json);
+					mesg.textContent = isExist?"帳號已使用，請更改。":"帳號可使用。";
 				}
 			});
 			
