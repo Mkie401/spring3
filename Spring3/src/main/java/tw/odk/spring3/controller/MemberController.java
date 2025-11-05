@@ -48,5 +48,20 @@ public class MemberController {
 		return ResponseEntity.ok(map);
 	}
 	
+	/*
+	 * request: {account:xx, passwd:xxx}
+	 * response: {"success":true/false}
+	 */
+	@PostMapping("/login")
+	public  ResponseEntity<Map<String, Boolean>> login(@RequestBody Map<String, String> body) {
+		
+		String account = body.get("account");
+		String passwd = body.get("passwd");
+		
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		map.put("success", service.loginV2(account, passwd));
+		
+		return ResponseEntity.ok(map);
+	}
 	
 }
