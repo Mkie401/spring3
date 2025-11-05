@@ -13,6 +13,14 @@
 					dataType : "json"
 				}).done(function(data){
 					console.log(data);
+					if (data.success) {
+						$('#companyName').text(data.companyName);
+						$('#companyTel').text(data.companyTel);
+						$('#welcome').text("Hello," + data.member.name);
+						
+					}else{
+						window.location.href = "login.html";
+					}
 				}).fail(function(){
 					window.location.href = "login.html";
 				});

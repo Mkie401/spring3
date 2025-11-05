@@ -106,8 +106,15 @@ public class MemberController {
 	
 	
 	@RequestMapping("/status")
-	public void status(HttpSession session) {
+	public ResponseEntity<Map<String, Object>> status(HttpSession session) {
+		Object member = session.getAttribute("member");
+		Map<String, Object> response = new HashMap<>();
+		response.put("success", member != null);
+		response.put("member", member);
+		response.put("companyName", companyName);
+		response.put("companyTel", companyTel);
 		
+		return ResponseEntity.ok(response);
 	}
 	
 }

@@ -12,7 +12,7 @@ public class MyConfig {
 	
 	@Bean
 	public String companyName() {
-		return "Super" + companyName;
+		return "Super " + companyName;
 	}
 	
 }
