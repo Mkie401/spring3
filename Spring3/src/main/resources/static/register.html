@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+	</head>
+	<body>
+		<h1>Register Page</h1>
+		<hr />
+		<form id="regForm">
+			Account: <input id="account" required="required" />
+				<span id="mesg" style="color: red"></span><br />
+			Password: <input id="passwd" type="password" required="required" /><br />
+			Name: <input id="name" required="required" /><br />
+			<input type="submit" value="Register" />
+		</form>	
+		
+		<script type="text/javascript">
+			let account = document.getElementById("account");
+			let passwd = document.getElementById("passwd");
+			let name = document.getElementById("name");
+			let regForm = document.getElementById("regForm");
+			
+			account.addEventListener('blur', async () =>{
+				if (account.value){
+					let url = "/api/member/exist?account=" + account.value;
+					await fetch(url);
+				}
+			});
+			
+			regForm.addEventListener('submit', async (e) => {
+				e.preventDefault();
+				let data = {
+					account: account.value,
+					passwd: passwd.value,
+					name: name.value
+				};
+				let url = "/api/member/register";
+				let json = await fetch(url, {
+					method: 'POST',
+					headers: {"Content-Type":"application/json"},
+					body: JSON.stringify(data)
+				});
+			});
+		</script>
+		
+		
+	</body>
+</html>
