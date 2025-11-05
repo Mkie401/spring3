@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			// 檢查session
+			$(document).ready(function(){
+				$.ajax({
+					url : "/api/member/status",
+					method : "POST",
+					dataType : "json"
+				}).done(function(data){
+					console.log(data);
+				}).fail(function(){
+					window.location.href = "login.html";
+				});
+			})
+		</script>	
+	</head>
+	<body>
+		<h1 id="companyName">Index Page</h1>
+		<h3 id="companyTel"></h3>
+		<hr>
+		<div id="welcome"></div>
+		<hr>
+		
+	</body>
+</html>

@@ -54,5 +54,15 @@ public class MemberService {
 	}
 	
 	
+	public Member loginV3(String account, String passwd) {
+			// 有就是有 沒有就是 null
+		Member member = repository.findByAccount(account).orElse(null);
+		if (member != null && BCrypt.checkpw(passwd, member.getPasswd())) {
+			return member;
+		}
+		return null;
+	}
+	
+	
 	
 }

@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#loginForm').on('submit', function(e){
+					e.preventDefault();
+					let account = $('#account').val();
+					let passwd = $('#passwd').val();
+					
+					$.ajax({
+						url: '/api/member/loginV3',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify({
+							account: account,
+							passwd: passwd
+						}),
+						success: function(response){
+							console.log(response);
+							if (response.success) {
+								window.location.href = '/index.html';
+							}else{
+								$('#mesg').text('登入失敗');
+							}
+							
+							
+						},
+						error: function(xhttp, status, error){
+							console.log(status);
+							console.log(error);
+						}
+					});
+					
+				});
+			});
+		
+		</script>
+	
+	</head>
+	<body>
+		<h1>會員登入</h1>
+		<hr />
+		<form id="loginForm">
+			Account: <input id="account" required="required" /><br />
+			Password: <input id="passwd" type="password" required="required" /><br />
+			<input type="submit" value="Login" />
+		</form>
+	</body>
+</html>

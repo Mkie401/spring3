@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpSession;
 import tw.odk.spring3.entity.Member;
 import tw.odk.spring3.service.MemberService;
 
@@ -59,9 +60,41 @@ public class MemberController {
 		String passwd = body.get("passwd");
 		
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		//map.put("success", service.login(account, passwd));
 		map.put("success", service.loginV2(account, passwd));
 		
 		return ResponseEntity.ok(map);
 	}
+	
+	@PostMapping("/loginV3")
+	public  ResponseEntity<Map<String, Boolean>> login(
+			@RequestBody Map<String, String> body,
+			HttpSession session) {
+		String account = body.get("account");
+		String passwd = body.get("passwd");
+		Member member = service.loginV3(account, passwd);
+		if (member != null) {
+			session.setAttribute("member", member);
+		}else {
+			session.invalidate();
+		}
+		
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		map.put("success", member != null);
+		return ResponseEntity.ok(map);
+		
+	}
+	
+	@RequestMapping("/logout")
+	public ResponseEntity<Map<String, String>> logout(HttpSession session) {
+		
+		session.invalidate();
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("success", "ok");
+		return ResponseEntity.ok(map);
+		
+	}
+	
 	
 }
