@@ -35,9 +35,52 @@
 					});
 				});
 				
+				const rpp = 10;
+				let nowPage = 0;
+				let totalPage = 0;
+				
+				
+				function loadHotel(page, size){
+						$.ajax({
+							url: `/api/hotel/all?page=${page}&size=${size}`,
+							method: 'GET',
+							dataType: "json"
+						}).done(data => {
+							let tbody = $("#hotelTable tbody").empty();
+							data.content.forEach(hotel => {
+								tbody.append(`
+										<tr>
+											<td>${hotel.id}</td>
+											<td>${hotel.name}</td>
+											<td>${hotel.tel}</td>
+											<td>${hotel.addr}</td>
+										</tr>
+										`);
+							});
+							
+							nowPage = data.number;
+							totalPage = data.totalPages;
+							$('#page').text(`${nowPage +1}/ ${totalPage}`);
+						});
+				}
+				// 進來時要先有資料
+				loadHotel(nowPage, rpp);
+				
+				
+				$('#prev').click(() => {
+					if (nowPage > 0) loadHotel(nowPage -1, rpp)
+				});
+				$('#next').click(() => {
+					if (nowPage + 1 < totalPage) loadHotel(nowPage + 1, rpp);
+				});
 				
 			})
 		</script>	
+			<style type="text/css">
+			table {border-collapse: collapse; width: 90%; margin:20px}
+			th, td {border: 1px solid #000; padding: 8px; text-align:center}
+			th {background-color: #f2f2f2}
+		</style>
 	</head>
 	<body>
 		<h1 id="companyName">Index Page</h1>
@@ -45,7 +88,20 @@
 		<hr>
 		<div id="welcome"></div>
 		<hr>
-		<button id="logout">Logout</button>
+		<button id="logout">Logout</button><hr>
+		<button id="prev">Prev</button>    <span id="page"></span><button id="next">Next</button>
+		<hr>
+		<table id="hotelTable">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Tel</th>
+					<th>Address</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
 		
 	</body>
 </html>
