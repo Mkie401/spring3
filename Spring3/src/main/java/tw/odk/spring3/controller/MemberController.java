@@ -1,7 +1,9 @@
 package tw.odk.spring3.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +26,8 @@ import tw.odk.spring3.entity.Member;
 import tw.odk.spring3.repository.HotelRepository;
 import tw.odk.spring3.repository.MemberRepository;
 import tw.odk.spring3.service.MemberService;
+import tw.odk.spring3.utils.MemberForm;
+import tw.odk.spring3.utils.ReadProperties;
 
 @RestController
 @RequestMapping("/api/member")
@@ -164,5 +169,33 @@ public class MemberController {
 			System.out.println(e);
 		}
 	}
+	
+	@Autowired
+	private ReadProperties readProperties;
+	
+	@PostMapping("/test3")
+	public void test3(@ModelAttribute MemberForm memberForm) {
+		System.out.println(memberForm.getAccount());
+		System.out.println(memberForm.getFiles().size());
+		System.out.println(readProperties.getUploadDir());
+		File here = new File(".");
+		System.out.println(here.getAbsolutePath());
+		String uploadDir = here.getAbsolutePath() + "/" + readProperties.getUploadDir();
+		
+		List<MultipartFile> files = memberForm.getFiles();
+		
+		for ( MultipartFile file : memberForm.getFiles()) {
+			if (!file.isEmpty()) {
+				String fname = uploadDir + file.getOriginalFilename();
+				try {
+					file.transferTo(new File(fname));
+				}catch(Exception e) {
+					System.out.println(e);
+				}
+			}
+		}
+		
+	}
+	
 	
 }
