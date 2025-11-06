@@ -1,5 +1,6 @@
 package tw.odk.spring3.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,20 +8,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
 import tw.odk.spring3.entity.Member;
+import tw.odk.spring3.repository.HotelRepository;
+import tw.odk.spring3.repository.MemberRepository;
 import tw.odk.spring3.service.MemberService;
 
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
+	
+	@Autowired
+	private MemberRepository memberRepository;
+	
 	
 	@Autowired
 	private MemberService service;
@@ -115,6 +125,44 @@ public class MemberController {
 		response.put("companyTel", companyTel);
 		
 		return ResponseEntity.ok(response);
+	}
+	
+	@Autowired
+	private NamedParameterJdbcTemplate jdbc;
+	
+	@PostMapping("/{id}")
+	public void test1(@PathVariable Integer id, 
+			@RequestParam MultipartFile upload) {
+		try {
+			byte[] bytes = upload.getBytes();
+			String sql = """
+					UPDATE member SET icon = :icon WHERE id = :id
+					""";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("id", id);
+			params.put("icon", bytes);
+			
+			jdbc.update(sql, params);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+	}
+	
+	
+	@PostMapping("/v2/{id}")
+	public void test2(@PathVariable Long id, 
+			@RequestParam MultipartFile upload) {
+		try {
+			byte[] bytes = upload.getBytes();
+			Member member = memberRepository.findById(id).orElse(null);
+			if (member != null) {
+				member.setIcon(bytes);
+				memberRepository.save(member);
+			}
+		
+		} catch (IOException e) {
+			System.out.println(e);
+		}
 	}
 	
 }
